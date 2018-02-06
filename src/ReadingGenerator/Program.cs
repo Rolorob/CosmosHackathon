@@ -40,12 +40,13 @@ namespace CosmosHackathon.ReadingGenerator
             Console.WriteLine("Done!");
         }
 
-        private static Task Run(IReadingGenerator generator, IReadingPersister persister, DateTime start, DateTime end, TimeSpan readingOffset)
+        private static async Task Run(IReadingGenerator generator, IReadingPersister persister, DateTime start, DateTime end, TimeSpan readingOffset)
         {
             string deviceId = Guid.NewGuid().ToString();
             var readings = generator.GenerateReadings(deviceId, start, end, readingOffset);
 
-            return persister.Persist(readings);
+            await persister.Persist(readings)
+                .ConfigureAwait(false);
         }
 
         private static IReadingGenerator GetGenerator(string generator)
